@@ -688,6 +688,25 @@ load, and losing the import costs a session every standing rule with no error an
 The wiring between the two products, and the four steps that stayed manual, are in
 [`AGENT-SETUP.md`](AGENT-SETUP.md).
 
+## The 1850–1885 border record — `npm run check:histborders` (`scripts/build-hist-borders.mjs --check`, #R518)
+
+⚠ **This gate re-derives nothing, and that is deliberate.** `data/hist-borders.js` is built from
+about 400 MB of OpenHistoricalMap Overpass responses that CI cannot hold, so unlike
+`check:wars` / `check:histcities` it cannot rebuild the file and compare bytes. What it proves is
+that the **committed file is internally sound**: every record inside 1850–1885, every ring index
+resolvable, every ring on the globe, every span ordered, an English name on every record, and —
+the failure the round exists to fix — **a world to draw in every single year of the window**.
+
+**The residual, stated rather than implied**: a file that has drifted from the upstream source
+still passes. Only a rebuild can catch that, and a rebuild needs the network. `tests/r518-checks.test.mjs`
+narrows the residual from the other side — it names six polities that exist *only* inside this
+window (the Confederate States, the Two Sicilies, the Papal States, Prussia, Hanover, Russian
+America), so a record that quietly reverted to the modern world fails even though it is well-formed.
+
+The one thing neither can see is a border that is in the right shape and the wrong place. That is
+what #R146 measured the hard way for the inner-German border, and the same warning holds here:
+internal consistency is not geographic accuracy.
+
 ## 文書の検査 — `npm run check:docs` の規則一覧 (`scripts/doc-facts.mjs`)
 
 Every rule this gate applies, by the name it reports itself under. `Architecture.md` §15.5 sends the
@@ -732,6 +751,7 @@ reader here for this list; adding a rule means adding a row.
 | `capability-count` | a document states a size for the Atlas capability registry that is not what `js/atlas-capabilities.js` holds |
 | `prompt-count` | `Architecture.md`'s system-prompt total or per-file breakdown disagrees with `EXPECTED_CALLS` in `tests/r285-checks.test.mjs` |
 | `deep-tier-size` | a stated size of a test tier — in a document, in `package.json` or in `scripts/worktree.mjs` — is not what `scripts/tiers.mjs` derives |
+| `histb-count` | a line naming the 1850–1885 border record states a count of records or of transition dates that `data/hist-borders.js` does not hold |
 | `shrink-policy` | one of the three standing documents states the removal policy without the confirmation step, without forbidding it unilaterally, or without sending the reader to the 正本 for the Atlas carve-out |
 
 The last six of the #R403 batch are described below, after the Edge Function rules they grew out of.
