@@ -56,7 +56,8 @@ export const ROWS = [
   ]),
   C('artashat', 44.5478, 39.9528, 'AM', ['Artashat', 'Արտաշատ'], [
     E(0, 1944, N('Kamarlu', 'カマルル', 'Камарлу', 0, 0, 0)),
-  ]),
+  ], { waive: [{ key: 'Artashat', place: 'Verin Artashat', cc: 'AM',
+    why: 'the village 6 km upriver is «Upper Artashat»; the bare form is a GeoNames alternate for it, never the name a tile carries.' }] }),
   C('hrazdan', 44.7672, 40.4989, 'AM', ['Hrazdan', 'Հրազդան'], [
     E(0, 1958, N('Akhta', 'アフタ', 'Ахта', 0, 0, 0)),
   ]),
