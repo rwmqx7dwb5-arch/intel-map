@@ -237,13 +237,17 @@ export const ROWS = [
   C('svetogorsk', 28.8622, 61.1128, 'RU', ['Svetogorsk', 'Светогорск'], [
     E(0, 1948, N('Enso', 'エンソ', 'Энсо', 0, 0, 0)),
   ]),
-  /* ⚠⚠ TERIJOKI IS NOT HERE, AND #R427'S BUILD IS WHY — BUT THE REASON HAS EXPIRED (#R521).
-     Zelenogorsk on the Karelian Isthmus shares BOTH of its spellings — Зеленогорск and Zelenogorsk
-     — with the closed city of the same name in Krasnoyarsk Krai (71 354 people), which carries them
-     as its OWN current name. When identity was a spelling there was no key that named one and not
-     the other, so the row was dropped. The two cities are 3 679 km apart, which the guard radius
-     now separates trivially. The row is still absent only because writing new history is a
-     different job from fixing the join; the same goes for Armavir and Kadma. */
+  /* ⚠⚠ #R427 DROPPED THIS ROW, AND #R521 IS WHY IT IS BACK. Zelenogorsk on the Karelian Isthmus
+     shares BOTH of its spellings — Зеленогорск and Zelenogorsk — with the closed city of the same
+     name in Krasnoyarsk Krai, which carries them as its OWN current name. While identity was a
+     spelling there was no key that named one and not the other, and the honest answer was to carry
+     no row at all. The two are 3 679 km apart; the guard radius separates them by arithmetic.
+     Renamed by decree of the RSFSR Supreme Soviet Presidium on 1 October 1948 — nine months of
+     that year were still Terijoki, so the span takes it, which is the rule Царицын/Сталинград
+     follows one screen up. */
+  C('zelenogorsk-terijoki', 29.7031, 60.1953, 'RU', ['Zelenogorsk', 'Зеленогорск'], [
+    E(0, 1948, N('Terijoki', 'テリヨキ', 'Терийоки', 0, 0, 0)),
+  ]),
   /* ── southern Sakhalin: Japanese (Karafuto) 1905–1945 ───────────────────────────────────── */
   C('yuzhno-sakhalinsk', 142.7378, 46.9591, 'RU', ['Yuzhno-Sakhalinsk', 'Южно-Сахалинск'], [
     E(1905, 1945, N('Toyohara', '豊原', 'Тоёхара', '豐原', '丰原', '도요하라')),

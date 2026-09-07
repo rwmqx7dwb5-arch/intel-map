@@ -123,7 +123,7 @@ export const STATIC_EXCLUDE = [
   'data/ecoregions_2017.js',
   /* ══ (#R521) EVIDENCE FOR THE BUILD, NOT A PAYLOAD FOR THE BROWSER ═══════════════════════════
      data/histcities-homonyms.json.gz is every settlement on Earth answering to one of the
-     historical-city record's 1 034 spellings — the file `npm run check:histcities` uses to prove
+     historical-city record's spellings — the file `npm run check:histcities` uses to prove
      that a row's guard radius reaches its own city and no other. Nothing in js/ or src/ fetches
      it, and nothing ever should: the answer it certifies is already baked into the `g` field of
      data/hist-cities.json, which the app does load. Copying it would ship 30 kB to every visitor

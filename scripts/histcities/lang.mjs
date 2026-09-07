@@ -92,6 +92,20 @@ export function E(from, to, name) {
   cannot be proven and the guard falls back to its default.» A sentence, not a boolean — the
   build prints it. Six rows have one; every other row must be provable.
 
+  ── `o.measured` ────────────────────────────────────────────────────────────────────────────
+  «The guard this row needs is below the default floor, and here is the measurement that says it
+  is still big enough.» { km, on, why } — `km` is the distance, IN KILOMETRES, from this row's
+  coordinate to the label node the vector tiles actually draw, `on` is the ISO date it was
+  measured, `why` is the sentence.
+
+  ⚠ THE FLOOR IS «WHAT AN UNMEASURED ROW GETS», NOT A LAW. GUARD_FLOOR_KM exists because the gap
+  between the record's coordinate and the tile's own node is unknown offline and was as large as
+  6.68 km (Tokyo) across the rows that were checked. A row that has actually been measured knows
+  its own gap, and refusing it on a number derived from OTHER rows' worst case would be refusing
+  evidence in favour of a default. The build still requires the guard to be at least three times
+  the measured gap, and never below GUARD_HARD_FLOOR_KM — below that the vector tile's own
+  quantisation at `ofm-city`'s minzoom (±0.6 km at z3) is a coin toss on its own.
+
   ── `o.waive` ───────────────────────────────────────────────────────────────────────────────
   «A DIFFERENT settlement inside the guard also answers to this spelling — but only in
   GeoNames' alternate-name list, not as its own name, so no vector tile carries it.» Written as
@@ -109,6 +123,12 @@ export function C(id, lon, lat, cc, keys, eras, o) {
   if (o.unlisted !== undefined && (typeof o.unlisted !== 'string' || o.unlisted.length < 20)) {
     throw new Error(`C(): «${id}» declares «unlisted» without saying why`);
   }
+  if (o.measured !== undefined) {
+    const m = o.measured;
+    if (!m || !(m.km >= 0) || !/^\d{4}-\d{2}-\d{2}$/.test(m.on || '') || !m.why || m.why.length < 20) {
+      throw new Error(`C(): «${id}» — «measured» needs { km, on: 'YYYY-MM-DD', why } and the why must be a sentence`);
+    }
+  }
   if (o.waive !== undefined) {
     if (!Array.isArray(o.waive)) throw new Error(`C(): «${id}» — «waive» is a list of { key, place, cc, why }`);
     for (const w of o.waive) {
@@ -117,5 +137,5 @@ export function C(id, lon, lat, cc, keys, eras, o) {
       }
     }
   }
-  return { id, lon, lat, cc, keys, eras, unlisted: o.unlisted || '', waive: o.waive || [] };
+  return { id, lon, lat, cc, keys, eras, unlisted: o.unlisted || '', waive: o.waive || [], measured: o.measured || null };
 }

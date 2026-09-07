@@ -193,7 +193,7 @@ volcano-layers.js                 火山の3レイヤー window.IntMapVolcanoLay
 time-borders.js                   時間軸の上の歴史的国境 IntMapTimeBorders
 time-countries.js                 時計の年から見た Countries タブ
 history.js                        歴史的国家／同一性／マディソン系列
-hist-cities.js                    時計の年の**都市名** IntMapHistCities（608都市・`ofm-city` の text-field を match で包み、各分岐を `distance` のガード半径で括る・記録は data/hist-cities.json）
+hist-cities.js                    時計の年の**都市名** IntMapHistCities（611都市・`ofm-city` の text-field を match で包み、各分岐を `distance` のガード半径で括る・記録は data/hist-cities.json）
 us-elections.js                   すべての米大統領選挙 IntMapUSElections（州をクリックするとその州の票と選挙人）
 war-fronts.js                     戦争の**6行**（WW1／WW2／朝鮮／ベトナム／中東／ユーゴ）IntMapWarFronts（**eager**——行と IntMapOS 命令だけ・`ROWS` が行の正本）
 war-layer.js                      戦争の層そのもの（**on-demand**・`__imWarFronts`・戦争ごとに1インスタンス／凡例に日スライダーと再生）

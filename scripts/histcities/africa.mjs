@@ -62,8 +62,14 @@ export const ROWS = [
   C('chinhoyi', 30.2000, -17.3667, 'ZW', ['Chinhoyi'], [
     E(0, 1981, N('Sinoia', 'シノイア', 'Синоя', 0, 0, 0)),
   ]),
-  /* ⚠ KADOMA (formerly Gatooma) IS NOT HERE: 門真市 Kadoma in Osaka Prefecture, 131 727 people,
-     carries the same Latin spelling as its own name. The build found it. */
+  /* ⚠⚠ #R427 DROPPED THIS ROW: 門真市 Kadoma in Osaka Prefecture carries the same Latin spelling
+     as its own `name:en`, and the build was right to refuse a rule that would have written
+     «Gatooma» across a city in Osaka. (#R521) they are 10 000 km apart.
+     Gazetted 18 April 1982 with 31 other places — the same batch as Fort Victoria, Sinoia,
+     Marandellas and Hartley above, which is why this span ends in the same year they do. */
+  C('kadoma-zw', 29.9000, -18.3400, 'ZW', ['Kadoma'], [
+    E(0, 1981, N('Gatooma', 'ガトゥーマ', 'Гатума', 0, 0, 0)),
+  ]),
   C('marondera', 31.5500, -18.1833, 'ZW', ['Marondera'], [
     E(0, 1981, N('Marandellas', 'マランデラス', 'Марандельяс', 0, 0, 0)),
   ]),

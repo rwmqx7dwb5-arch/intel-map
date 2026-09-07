@@ -13,7 +13,7 @@
  *  was being used as an IDENTITY: js/hist-cities.js rewrote `ofm-city`'s `text-field` wherever
  *  the tile's own name matched a key, with nothing in the expression that could tell one Kochi
  *  from another. Every city on Earth sharing a spelling with a row was in scope, and the record
- *  holds 1 034 spellings.
+ *  holds over a thousand spellings.
  *
  *  So identity is now NAME **AND** PLACE. Each row carries a guard radius `g`; the runtime asks
  *  MapLibre's `distance` expression how far the candidate feature is from the row's coordinate
@@ -80,17 +80,23 @@ const GUARD_MAX_KM = GUARD_M / 1000;
 /* ⚠ MEASURED, NOT CHOSEN — from BOTH sides, because a guard has to be small enough to exclude the
    namesake and large enough to still contain the label.
      · the namesakes: the nearest one carrying a row's spelling as its own name is 13.5 km away
-       (Türkmenbaşy village), then 25.6 (Abovyan village) and 29.2 (Holubivka village). Everything
-       else is over 40 km, and 604 of 608 rows are not constrained at all.
+       (Türkmenbaşy village), then 25.6 (Abovyan village) and 29.2 (Holubivka village) — and 8.2,
+       Armavir's, which is why `measured` exists. Everything else is over 40 km, and 600 of 611
+       rows are not constrained at all.
      · the labels: the vector tile's `place` node is NOT the record's coordinate, and the gap was
        measured in the real renderer against live OpenFreeMap tiles — 0.11 km (Volgograd), 0.38
        (Kirov), 0.50 (Holubivka), 0.54 (Abovyan), 1.47 (Linden), 3.73 (Türkmenbaşy), 4.09 (Yining),
        4.78 (Kochi), 6.68 (Tokyo). ⚠ The worst of those is 6.68 km, so a guard NEAR the floor has
        single-digit kilometres of room and must not be taken on trust: the four narrowed rows were
        each checked against the real tile (margins 3.0 / 4.4 / 12.2 / 14.1 km).
-   A floor of 6 km therefore costs nothing today, and refuses the row that cannot be separated
-   tomorrow rather than shipping one whose label is inside its own namesake's half-space. */
+   ⚠⚠ THE FLOOR IS «WHAT AN UNMEASURED ROW GETS». It is derived from OTHER rows' worst case, so a
+   row that has actually been measured may declare `measured` and go below it — refusing evidence
+   in favour of a default is not caution. What no declaration may cross is GUARD_HARD_FLOOR_KM:
+   OpenMapTiles serves `place` at extent 4096, so at `ofm-city`'s minzoom of 3 one unit is 1.22 km
+   and the rounding alone is ±0.61 km. A guard of a kilometre or two is decided by that rounding. */
 const GUARD_FLOOR_KM = 6;
+const GUARD_HARD_FLOOR_KM = 2;
+const MEASURED_RATIO = 3;     /* a declared guard must be at least this many times the measured gap */
 const MARGIN = 2;             /* the guard reaches at most HALFWAY to the nearest namesake */
 const ANCHOR_MAX_KM = 40;     /* how far to look for the row's own city before calling it unproven */
 const ANCHOR_TOL_KM = 10;     /* …and how far it may be before the coordinate is wrong (see ①) */
@@ -191,7 +197,17 @@ for (const r of rows) {
   const nearestRival = rivals[0] || null;
   const guardKm = Math.min(GUARD_MAX_KM, nearestRival ? nearestRival.d / MARGIN : Infinity);
   if (guardKm < GUARD_FLOOR_KM) {
-    problems.push(`${at}: ${nearestRival.name} (${nearestRival.cc}, pop ${nearestRival.pop.toLocaleString('en-US')}) is only ${nearestRival.d.toFixed(1)} km away and carries «${nearestRival.k}» as its own name, so the guard would have to shrink to ${guardKm.toFixed(1)} km — below the ${GUARD_FLOOR_KM} km floor, which is another way of saying the two cannot be told apart by position. Drop the key.`);
+    const m = r.measured;
+    const rival = `${nearestRival.name} (${nearestRival.cc}, pop ${nearestRival.pop.toLocaleString('en-US')}) is only ${nearestRival.d.toFixed(1)} km away and carries «${nearestRival.k}» as its own name, so the guard shrinks to ${guardKm.toFixed(1)} km`;
+    if (!m) {
+      problems.push(`${at}: ${rival} — below the ${GUARD_FLOOR_KM} km floor, which is what a row gets when nobody has measured the gap between its coordinate and the node the tiles draw. Either drop the key, or measure that gap against a real tile and declare { measured: { km, on, why } }.`);
+    } else if (guardKm < GUARD_HARD_FLOOR_KM) {
+      problems.push(`${at}: ${rival} — below the ${GUARD_HARD_FLOOR_KM} km hard floor, which no measurement can lift: at ofm-city's minzoom of 3 the tile's own quantisation is ±0.61 km, so a guard this small is decided by rounding. Drop the key.`);
+    } else if (guardKm < m.km * MEASURED_RATIO) {
+      problems.push(`${at}: ${rival}, but the row measured its label ${m.km} km from this coordinate (${m.on}) — the guard must be at least ${MEASURED_RATIO}× that, and ${guardKm.toFixed(1)} km is not. Re-measure, or drop the key.`);
+    }
+  } else if (r.measured) {
+    problems.push(`${at}: declares «measured», but the guard is ${guardKm.toFixed(1)} km, at or above the ${GUARD_FLOOR_KM} km floor — the declaration excuses nothing, so it should go`);
   }
 
   /* ③ a namesake INSIDE the guard: declared, named, and re-tested */
@@ -262,7 +278,9 @@ function report() {
   console.log(`  identity: ${keyCount} spellings, each bound to a point; ${rows.length - tight.length - unlisted.length} rows at the ${GUARD_MAX_KM} km guard, `
     + `${tight.length} narrowed by a namesake, ${unlisted.length} not carried by GeoNames, ${waived} declared waiver(s)`);
   for (const a of tight.sort((x, y) => x.guardKm - y.guardKm)) {
-    console.log(`    ${a.guardKm.toFixed(1).padStart(5)} km  ${a.r.id} — nearest namesake ${a.nearestRival.name} (${a.nearestRival.cc}) at ${a.nearestRival.d.toFixed(1)} km`);
+    const m = a.r.measured;
+    console.log(`    ${a.guardKm.toFixed(1).padStart(5)} km  ${a.r.id} — nearest namesake ${a.nearestRival.name} (${a.nearestRival.cc}) at ${a.nearestRival.d.toFixed(1)} km`
+      + (m ? `  ⚠ below the ${GUARD_FLOOR_KM} km floor on a measurement: label ${m.km} km from the coordinate (${m.on})` : ''));
   }
   console.log('  per-language forms actually written down (the rest take the Latin/English form,');
   console.log('  which is what the live map already shows when OSM carries no tag for that language):');

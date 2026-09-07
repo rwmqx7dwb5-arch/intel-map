@@ -62,7 +62,7 @@ test('① the record is shipped, is several hundred cities, and is complete in n
     assert.ok(Array.isArray(c.e) && c.e.length, `${c.id} has no eras`);
     /* ⚠ (#R521) the guard is what makes the key a join to ONE city. A row without one, or with one
        wide enough to be meaningless, is a row that renames its namesakes. */
-    assert.ok(Number.isFinite(c.g) && c.g >= 6000 && c.g <= 20000, `${c.id}: guard radius ${c.g} m is outside the range the build may derive`);
+    assert.ok(Number.isFinite(c.g) && c.g >= 2000 && c.g <= 20000, `${c.id}: guard radius ${c.g} m is outside the range the build may derive`);
     for (const e of c.e) {
       eras++;
       for (const lg of LANGS) assert.ok(e.n[lg], `${c.id}: era «${e.n.en}» has no ${lg} form`);
@@ -134,7 +134,7 @@ test('④ every branch of the built expression is gated on position, and falls t
       assert.equal(v[1][0], '<=');
       assert.equal(v[1][1][0], 'distance', "the guard is MapLibre's own distance expression");
       assert.equal(v[1][1][1].type, 'Point');
-      assert.ok(v[1][2] >= 6000 && v[1][2] <= 20000, "the radius is the record's, in metres");
+      assert.ok(v[1][2] >= 2000 && v[1][2] <= 20000, "the radius is the record's, in metres");
       assert.equal(v[3][0], 'var', 'a feature outside the guard falls through, it does not get the era name');
       branches++;
     }
@@ -360,7 +360,7 @@ test('⑨ the cache is keyed on the base expression too, so a label-language swi
   assert.equal(again, asLocal, 'an unchanged call is served from the cache');
 });
 
-/* ══ ⚠⚠⚠ ⑪ THE SAME PROPERTY, OVER ALL 608 ROWS AND ALL 1 034 SPELLINGS ═══════════════════════
+/* ══ ⚠⚠⚠ ⑪ THE SAME PROPERTY, OVER EVERY ROW AND EVERY SPELLING ══════════════════════════════
    ⑩ names three pairs because three pairs were reported. This asks the question of the whole
    record, against the shipped evidence — and it asks the evidence to prove itself first.
 

@@ -32,7 +32,7 @@
  *  Until #R521 the match above WAS the whole rule, and a reader travelling to 1950 watched 高知市
  *  become コーチン. The row is correct — Kochi in Kerala was Cochin until 1996 — and so was every
  *  gate: the expression simply had nothing in it that could tell one Kochi from another, so every
- *  city on Earth sharing a spelling with one of the record's 1 034 keys was in scope. Kirov in
+ *  city on Earth sharing a spelling with one of the record's thousand-odd keys was in scope. Kirov in
  *  Kaluga oblast would have become Vyatka; Linden, New Jersey would have become Mackenzie.
  *
  *  ⚠ SO EVERY BRANCH IS NOW GUARDED BY POSITION. The value of a branch is not the era name but a
@@ -50,7 +50,7 @@
  *
  *  ⚠ AND THE FALLTHROUGHS ARE `let` BINDINGS, not copies. A branch that fails its guard has to
  *  fall back to the OTHER match (and that one to the base expression), and writing those out per
- *  branch would repeat the base expression 1 034 times inside one layout property. `['let', …]`
+ *  branch would repeat the base expression once per key inside one layout property. `['let', …]`
  *  binds each once; the branch says `['var', …]`.
  *
  *  ══ WHEN IT APPLIES ════════════════════════════════════════════════════════════════════════════
