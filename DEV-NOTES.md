@@ -458,6 +458,10 @@ OHM は `name:en/ja/de/ru/es/zh/fr/ko` を持っている（274〜435 / 494）�
 - `npm run check:histborders`（`--check`）— **再生成はしない**（CI に約 400 MB の上流応答は置けない）。
   同梱ファイルの不変条件を測る。**残余は `docs/TESTING.md` に書いた**——上流から乖離した
   ファイルはこの門を通る。
+  ⚠ **`scripts/test-parallel.mjs` と `.github/workflows/ci.yml` の両方に登録した。**
+  `package.json` に `check:*` を足しただけでは**呼び出し元が無い**（`check:docs` の `gate-lists` /
+  `ci-gates` は2つの一覧を突き合わせるが、一覧と実行器の隙間は見ない）——それが #R381 の見つけた、
+  `data/wars.json` が15ラウンド何とでも言えた形そのもの。
 - `npm run check:perf` の **`dist.total` と `dist.data` の天井だけ**を手で上げた（+5.1 MB＝この記録）。
   ⚠ **`--update` は走らせていない**（全項目を書き戻すので、無関係な増加まで一緒に承認してしまう）。
   ⚠ **起動経路の SYNC は 1 バイトも増えていない**——束は最初に過去へ旅したときに初めて読む

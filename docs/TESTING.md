@@ -690,6 +690,11 @@ The wiring between the two products, and the four steps that stayed manual, are 
 
 ## The 1850–1885 border record — `npm run check:histborders` (`scripts/build-hist-borders.mjs --check`, #R518)
 
+Registered in `scripts/test-parallel.mjs` (so `npm test` runs it) **and** in `.github/workflows/ci.yml`.
+⚠ A `check:*` script with no caller is what #R381 found had let `data/wars.json` say anything for
+fifteen rounds; `check:docs`' `gate-lists` and `ci-gates` rules see the two lists, not the gap
+between them and the runner, so registering it is a step of adding it, not a follow-up.
+
 ⚠ **This gate re-derives nothing, and that is deliberate.** `data/hist-borders.js` is built from
 about 400 MB of OpenHistoricalMap Overpass responses that CI cannot hold, so unlike
 `check:wars` / `check:histcities` it cannot rebuild the file and compare bytes. What it proves is
